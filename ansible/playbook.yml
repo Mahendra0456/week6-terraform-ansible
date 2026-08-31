@@ -1,0 +1,52 @@
+---
+- name: Configure Application Server
+  hosts: app
+  become: true
+
+  tasks:
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - nginx
+          - curl
+        state: present
+        update_cache: true
+
+    - name: Create application user
+      ansible.builtin.user:
+        name: appuser
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Create application directory
+      ansible.builtin.file:
+        path: /opt/myapp
+        state: directory
+        owner: appuser
+        group: appuser
+        mode: '0755'
+
+    - name: Create application page
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head>
+              <title>Week 6 DevOps</title>
+          </head>
+          <body>
+              <h1>Week 6 Infrastructure Automation</h1>
+              <p>Updated automatically through Ansible.</p>
+          </body>
+          </html>
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Start and enable nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

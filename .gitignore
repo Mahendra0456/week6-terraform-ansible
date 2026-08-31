@@ -1,0 +1,6 @@
+*.pem
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.*
+*.tfvars
+.aws/
